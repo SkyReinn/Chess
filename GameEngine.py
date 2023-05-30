@@ -74,6 +74,8 @@ class GameState():
                         self.getPawnMoves(row, col, moves)
                     if b[row][col][1] == 'R':
                         self.getRookMoves(row, col, moves)
+                    if b[row][col][1] == 'B':
+                        self.getBishopMoves(row, col, moves)
         return moves
     
     def getPawnMoves(self, row, col, moves):
@@ -163,6 +165,59 @@ class GameState():
         startMove = self.getLocationString(col, row)
         i, j = col + 1, row + 1
         while i <= 7 and j <= 7:
+            if b[i][j] == '--':
+                move = startMove + self.getLocationString(i, j)
+                moves.append(move)
+                i += 1
+                j += 1
+            elif b[row][col][0] == b[i][j][0]:
+                break
+            else:
+                move = startMove + self.getLocationString(i, j)
+                moves.append(move)
+                break
+        i, j = col - 1, row - 1
+        while i >= 0 and j >= 0:
+            if b[i][j] == '--':
+                move = startMove + self.getLocationString(i, j)
+                moves.append(move)
+                i -= 1
+                j -= 1
+            elif b[row][col][0] == b[i][j][0]:
+                break
+            else:
+                move = startMove + self.getLocationString(i, j)
+                moves.append(move)
+                break
+        i, j = col + 1, row - 1
+        while i <= 7 and j >= 0:
+            if b[i][j] == '--':
+                move = startMove + self.getLocationString(i, j)
+                moves.append(move)
+                i += 1
+                j -= 1
+            elif b[row][col][0] == b[i][j][0]:
+                break
+            else:
+                move = startMove + self.getLocationString(i, j)
+                moves.append(move)
+                break
+        i, j = col - 1, row + 1
+        while i >= 0 and j <= 7:
+            if b[i][j] == '--':
+                move = startMove + self.getLocationString(i, j)
+                moves.append(move)
+                i -= 1
+                j += 1
+            elif b[row][col][0] == b[i][j][0]:
+                break
+            else:
+                move = startMove + self.getLocationString(i, j)
+                moves.append(move)
+                break
+
+
+
             
 
 

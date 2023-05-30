@@ -35,7 +35,7 @@ def getSquareClicked(mouseCoordinates):
 def validMove(row, col, Row, Col, gameState):
     if Row >= 0 and Row <= 7 and Col >= 0 and Col <= 7:
         move = gameState.getLocationString(col, row) + gameState.getLocationString(Col, Row)
-        validMoves = gameState.getValidMoves()
+        validMoves = gameState.getValidMoves(row, col)
         if move in validMoves:
             return True
     return False

@@ -59,23 +59,17 @@ class GameState():
             self.board[Row][Col] = self.board[row][col]
             self.board[row][col] = self.moveHistory[-1][4] + self.moveHistory[-1][5]
             del self.moveHistory[-1]
-    
-    def getValidMoves(self):
-        moves = self.getAllPossibleMoves()
-        return moves
 
-    def getAllPossibleMoves(self):
+    def getValidMoves(self, row, col):
         moves = []
         b = self.board
-        for row in range(len(b)):
-            for col in range(len(b)):
-                if(b[row][col][0] == 'w' and self.whiteTurn) or (b[row][col][0] == 'b' and not self.whiteTurn):
-                    if b[row][col][1] == 'P':
-                        self.getPawnMoves(row, col, moves)
-                    if b[row][col][1] == 'R':
-                        self.getRookMoves(row, col, moves)
-                    if b[row][col][1] == 'B':
-                        self.getBishopMoves(row, col, moves)
+        if(b[row][col][0] == 'w' and self.whiteTurn) or (b[row][col][0] == 'b' and not self.whiteTurn):
+            if b[row][col][1] == 'P':
+                self.getPawnMoves(row, col, moves)
+            if b[row][col][1] == 'R':
+                self.getRookMoves(row, col, moves)
+            if b[row][col][1] == 'B':
+                self.getBishopMoves(row, col, moves)
         return moves
     
     def getPawnMoves(self, row, col, moves):

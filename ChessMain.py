@@ -12,10 +12,12 @@ def loadImages():
     for piece in pieceNames:
         IMAGES[piece] = p.transform.scale(p.image.load('Pieces/' + piece + '.png'), (SQ_SIZE, SQ_SIZE))
 
-def drawBoard(screen):
-    for i in range(HEIGHT):
-        for j in range(WIDTH):
-            if (i + j) % 2 == 0:
+def drawBoard(screen, gameState):
+    for i in range(8):
+        for j in range(8):
+            if gameState.valid[j][i] == 1:
+                p.draw.rect(screen, 'Yellow', (SQ_SIZE * i, SQ_SIZE * j, SQ_SIZE, SQ_SIZE))
+            elif (i + j) % 2 == 0:
                 p.draw.rect(screen, 'Grey', (SQ_SIZE * i, SQ_SIZE * j, SQ_SIZE, SQ_SIZE))
             else:
                 p.draw.rect(screen, 'Grey30', (SQ_SIZE * i, SQ_SIZE * j, SQ_SIZE, SQ_SIZE))
@@ -31,6 +33,13 @@ def getSquareClicked(mouseCoordinates):
     squareRow = mouseCoordinates[1] // SQ_SIZE
     squareCol = mouseCoordinates[0] // SQ_SIZE
     return (squareRow, squareCol)
+
+def markMoves(row, col, gameState):
+    validMoves = gameState.getValidMoves(row, col)
+    for moves in validMoves:
+        x = int(gameState.ranksToRows[moves[3]])
+        y = int(gameState.filesToCols[moves[2]])
+        gameState.valid[x][y] = 1
 
 def validMove(row, col, Row, Col, gameState):
     if Row >= 0 and Row <= 7 and Col >= 0 and Col <= 7:
@@ -60,8 +69,10 @@ def main():
             if e.type == p.MOUSEBUTTONDOWN:
                 moving = True
                 row, col = getSquareClicked(p.mouse.get_pos())
+                markMoves(row, col, gameState)
             if e.type == p.MOUSEBUTTONUP:
                 moving = False
+                gameState.setZero()
                 Row, Col = getSquareClicked(p.mouse.get_pos())
                 if validMove(row, col, Row, Col, gameState):
                     gameState.update(row, col, Row, Col)
@@ -72,7 +83,7 @@ def main():
                 if e.key == p.K_r:
                     gameState.reset()
 
-        drawBoard(screen)
+        drawBoard(screen, gameState)
         drawImages(screen, gameState.board, row, col, moving)
         if moving == True:
             x, y = p.mouse.get_pos()

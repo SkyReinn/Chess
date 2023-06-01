@@ -35,7 +35,7 @@ def getSquareClicked(mouseCoordinates):
     return (squareRow, squareCol)
 
 def markMoves(row, col, gameState):
-    validMoves = gameState.getValidMoves(row, col)
+    validMoves = gameState.getPossibleMoves(row, col)
     for moves in validMoves:
         x = int(gameState.ranksToRows[moves[3]])
         y = int(gameState.filesToCols[moves[2]])
@@ -44,7 +44,7 @@ def markMoves(row, col, gameState):
 def validMove(row, col, Row, Col, gameState):
     if Row >= 0 and Row <= 7 and Col >= 0 and Col <= 7:
         move = gameState.getLocationString(col, row) + gameState.getLocationString(Col, Row)
-        validMoves = gameState.getValidMoves(row, col)
+        validMoves = gameState.getPossibleMoves(row, col)
         if move in validMoves:
             return True
     return False

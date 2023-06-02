@@ -261,6 +261,11 @@ class GameState():
                 moves.append(move)
                 break
 
+    def getKnightMoves(self, row, col, moves):
+        b = self.board
+        startMove = self.getLocationString(col, row)
+
+
     def squareUnderAttack(self, row, col):
         self.whiteTurn = not self.whiteTurn
         moves = self.getAllPossibleMoves()

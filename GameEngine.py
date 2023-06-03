@@ -58,7 +58,6 @@ class GameState():
         self.moveHistory.append(self.getLocationString(col, row) + self.getLocationString(Col, Row) + self.board[Row][Col])
         self.board[Row][Col] = self.board[row][col]
         self.board[row][col] = '--'
-        # print(self.moveHistory)
         
     def undoMove(self):
         if self.moveHistory:
@@ -85,6 +84,8 @@ class GameState():
                 self.getBishopMoves(row, col, moves)
             if b[row][col][1] == 'K':
                 self.getKingMoves(row, col, moves)
+            if b[row][col][1] == 'N':
+                self.getKnightMoves(row, col, moves)
         for i in range(len(moves) - 1, -1, -1):
             self.update(self.ranksToRows[moves[i][1]], self.filesToCols[moves[i][0]], self.ranksToRows[moves[i][3]], self.filesToCols[moves[i][2]])
             row, col = self.findKing()
@@ -110,6 +111,8 @@ class GameState():
                         self.getBishopMoves(i, j, moves)
                     if b[i][j][1] == 'K':
                         self.getKingMoves(i, j, moves)
+                    if b[i][j][1] == 'N':
+                        self.getKnightMoves(i, j, moves)
         return moves
 
     def getKingMoves(self, row, col, moves):
@@ -264,7 +267,13 @@ class GameState():
     def getKnightMoves(self, row, col, moves):
         b = self.board
         startMove = self.getLocationString(col, row)
-
+        color = 'w' if self.whiteTurn else 'b'
+        directions = [(-1, -2), (-2, -1), (-1, 2), (2, -1), (1, -2), (-2, 1), (1, 2), (2, 1)]
+        for dir in directions:
+            if (0 <= row + dir[0] <= 7) and (0 <= col + dir[1] <= 7):
+                if b[row + dir[0]][col + dir[1]][0] != color:
+                    move = startMove + self.getLocationString(col + dir[1], row + dir[0])
+                    moves.append(move)
 
     def squareUnderAttack(self, row, col):
         self.whiteTurn = not self.whiteTurn

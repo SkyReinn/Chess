@@ -77,15 +77,17 @@ class GameState():
                 self.getPawnMoves(row, col, moves)
             if b[row][col][1] == 'R':
                 self.getRookMoves(row, col, moves)
+                self.getCastleMoves(row, col, moves)
             if b[row][col][1] == 'B':
                 self.getBishopMoves(row, col, moves)
+            if b[row][col][1] == 'N':
+                self.getKnightMoves(row, col, moves)
             if b[row][col][1] == 'Q':
                 self.getRookMoves(row, col, moves)
                 self.getBishopMoves(row, col, moves)
             if b[row][col][1] == 'K':
                 self.getKingMoves(row, col, moves)
-            if b[row][col][1] == 'N':
-                self.getKnightMoves(row, col, moves)
+                self.getCastleMoves(row, col, moves)
         for i in range(len(moves) - 1, -1, -1):
             self.update(self.ranksToRows[moves[i][1]], self.filesToCols[moves[i][0]], self.ranksToRows[moves[i][3]], self.filesToCols[moves[i][2]])
             row, col = self.findKing()
@@ -106,25 +108,14 @@ class GameState():
                         self.getRookMoves(i, j, moves)
                     if b[i][j][1] == 'B':
                         self.getBishopMoves(i, j, moves)
+                    if b[i][j][1] == 'N':
+                        self.getKnightMoves(i, j, moves)
                     if b[i][j][1] == 'Q':
                         self.getRookMoves(i, j, moves)
                         self.getBishopMoves(i, j, moves)
                     if b[i][j][1] == 'K':
                         self.getKingMoves(i, j, moves)
-                    if b[i][j][1] == 'N':
-                        self.getKnightMoves(i, j, moves)
         return moves
-
-    def getKingMoves(self, row, col, moves):
-        b = self.board
-        startMove = self.getLocationString(col, row)
-        color = 'w' if self.whiteTurn else 'b'
-        directions = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (0, -1), (1, -1), (1, 1), (1, 0)]
-        for dir in directions:
-            if (0 <= row + dir[0] <= 7) and (0 <= col + dir[1] <= 7):
-                if b[row + dir[0]][col + dir[1]][0] != color:
-                    move = startMove + self.getLocationString(col + dir[1], row + dir[0])
-                    moves.append(move)
 
     def getPawnMoves(self, row, col, moves):
         b = self.board
@@ -275,6 +266,42 @@ class GameState():
                     move = startMove + self.getLocationString(col + dir[1], row + dir[0])
                     moves.append(move)
 
+    def getKingMoves(self, row, col, moves):
+        b = self.board
+        startMove = self.getLocationString(col, row)
+        color = 'w' if self.whiteTurn else 'b'
+        directions = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (0, -1), (1, -1), (1, 1), (1, 0)]
+        for dir in directions:
+            if (0 <= row + dir[0] <= 7) and (0 <= col + dir[1] <= 7):
+                if b[row + dir[0]][col + dir[1]][0] != color:
+                    move = startMove + self.getLocationString(col + dir[1], row + dir[0])
+                    moves.append(move)
+
+    def getCastleMoves(self, row, col, moves):
+        b = self.board
+        kingRow, kingCol = self.findKing()
+        if (kingRow == 0 or kingRow == 7) and (kingCol == 4) and (not self.squareUnderAttack(kingRow, kingCol)):
+            if ((row == 0 and col == 0) or (row == 0 and col == 4)) and self.notMoved(0, 0) and self.notMoved(0, 4) and b[0][1] == '--' and b[0][2] == '--' and b[0][3] == '--':
+                rookMove = self.getLocationString(0, 0) + self.getLocationString(3, 0)
+                kingMove = self.getLocationString(4, 0) + self.getLocationString(2, 0)
+                moves.append(rookMove)
+                moves.append(kingMove)
+            if ((row == 0 and col == 7) or (row == 0 and col == 4)) and self.notMoved(0, 7) and self.notMoved(0, 4) and b[0][5] == '--' and b[0][6] == '--':
+                rookMove = self.getLocationString(7, 0) + self.getLocationString(5, 0)
+                kingMove = self.getLocationString(4, 0) + self.getLocationString(6, 0)
+                moves.append(rookMove)
+                moves.append(kingMove)
+            if ((row == 7 and col == 0) or (row == 7 and col == 4)) and self.notMoved(7, 0) and self.notMoved(7, 4) and b[7][1] == '--' and b[7][2] == '--' and b[7][3] == '--':
+                rookMove = self.getLocationString(0, 7) + self.getLocationString(3, 7)
+                kingMove = self.getLocationString(4, 7) + self.getLocationString(2, 7)
+                moves.append(rookMove)
+                moves.append(kingMove)
+            if ((row == 7 and col == 7) or (row == 7 and col == 4)) and self.notMoved(7, 7) and self.notMoved(7, 4) and b[7][5] == '--' and b[7][6] == '--':
+                rookMove = self.getLocationString(7, 7) + self.getLocationString(5, 7)
+                kingMove = self.getLocationString(4, 7) + self.getLocationString(6, 7)
+                moves.append(rookMove)
+                moves.append(kingMove)
+
     def squareUnderAttack(self, row, col):
         self.whiteTurn = not self.whiteTurn
         moves = self.getAllPossibleMoves()
@@ -292,6 +319,12 @@ class GameState():
             for j in range(8):
                 if b[i][j] == ownKing:
                     return i, j
+
+    def notMoved(self, row, col):
+        for move in self.moveHistory:
+            if self.ranksToRows[move[1]] == row and self.filesToCols[move[0]] == col:
+                return False
+        return True
 
 
 

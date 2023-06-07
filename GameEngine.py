@@ -121,7 +121,7 @@ class GameState():
         b = self.board
         startMove = self.getLocationString(col, row)
         if self.whiteTurn:
-            if row == 6 and b[row-2][col] == '--':
+            if row == 6 and b[row-1][col] == '--' and b[row-2][col] == '--':
                 move = startMove + self.getLocationString(col, row-2)
                 moves.append(move)
             if row >= 1 and b[row-1][col] == '--':
@@ -134,7 +134,7 @@ class GameState():
                 move = startMove + self.getLocationString(col+1, row-1)
                 moves.append(move)
         else:
-            if row == 1 and b[row+2][col] == '--':
+            if row == 1 and b[row+1][col] == '--' and b[row+2][col] == '--':
                 move = startMove + self.getLocationString(col, row+2)
                 moves.append(move)
             if row <= 6 and b[row+1][col] == '--':

@@ -116,17 +116,19 @@ def main():
             x, y = p.mouse.get_pos()
             if(gameState.board[row][col] != '--'):
                 screen.blit(IMAGES[gameState.board[row][col]], (x - SQ_SIZE / 2, y - SQ_SIZE / 2))
-        # Checkmate
+        p.display.update()
+        clock.tick()
+
+        # Checkmate & Stalemate
         kingRow, kingCol = gameState.findKing()
         if gameState.squareUnderAttack(kingRow, kingCol) and not gameState.getPossibleMoves(kingRow, kingCol):
             if gameState.whiteTurn:
-                print("Black wins by checkmate!")
+                print("Black won by checkmate!")
             else:
-                print("White wins by checkmate!")
+                print("White won by checkmate!")
             done = True
-
-        p.display.update()
-        clock.tick()
+        if not gameState.getAllPossibleMoves():
+            print("Stalemate")
 
 if __name__ == "__main__":
     main()
